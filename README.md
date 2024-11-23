@@ -33,9 +33,25 @@ sudo apt install apache2
 
 ### Set up HTTPS
 
-You will first need an SSL certificate for the domain the web server will be running under. You can obtain one of these for free from Let's Encrypt. We obtained one for `fingerprint.byu.edu` by sending a CSR to the BYU Networking team. This file will *FINISH THIS
+You will first need an SSL certificate for the domain the web server will be running under. You can obtain one of these for free from Let's Encrypt. We obtained one for `fingerprint.byu.edu` by sending a CSR to the BYU Networking team. If you are just using a self signed certificate you can skip to the step called "Enable the default ssl configuration".  
 
-TODO: Where to store the certificate, and how to edit the default-ssl apache config settings. 
+After storing the certificate file and the key file on the server, edit `/etc/apache2/sites-available/ssl-default.conf` with the following two lines based on where you stored the files:
+```
+SSLCertificateFile /your/path/to/domain.crt
+SSLCertificateKeyFile /your/path/to/domain.key
+```
+
+If a chain file is also needed, edit the following line as well:  
+```
+SSLCertificateChainFile /your/path/to/CA.crt
+```
+
+In our case the three lines look like this:
+```
+SSLCertificateFile /etc/ssl/certs/fingerprint_byu_edu.crt
+SSLCertificateKeyFile /etc/ssl/private/fingerprint_byu_edu.key
+SSLCertificateChainFile /etc/apache2/ssl.cert/DigiCertCA.crt
+```
 
 Enable the default ssl configuration:  
 ```
@@ -70,6 +86,56 @@ sudo systemctl restart apache2
 ```  
 
 Full request headers are now being saved in `/var/log/apache2/headers.log`.  
+
+### Install Wordpress And Dependencies
+
+The following command can be used to install the wordpress dependencies:  
+```
+sudo apt install ghostscript \
+                 libapache2-mod-php \
+                 mysql-server \
+                 php \
+                 php-bcmath \
+                 php-curl \
+                 php-imagick \
+                 php-intl \
+                 php-json \
+                 php-mbstring \
+                 php-mysql \
+                 php-xml \
+                 php-zip
+```
+
+TODO: Setting up the database
+
+Download the latest version of wordpress, then unzip it and copy it to `/var/www`:  
+```
+wget https://wordpress.org/latest.zip
+
+unzip latest.zip
+
+sudo cp wordpress /var/www/
+```
+
+Navigate to `/var/www`, then remove the existing html folder, and replace it with a symbolic link to the wordpress folder (210 shoutout):  
+```
+cd /var/www
+
+sudo rm -rf html
+
+sudo ln -s wordpress html
+```
+
+Make the www-data user the owner and group of the files:
+```
+sudo chgrp -R www-data wordpress
+
+sudo chown -R www-data wordpress
+```
+
+### Set Up Wordpress
+
+TODO: editing the config files and then accessing the site (from https using the domain name)
 
 ## Logging
 
