@@ -31,6 +31,11 @@ The most important parts of this project are the applications; therefore the har
 sudo apt install apache2
 ```
 
+### Basic Apache Security
+
+Remove `Indexes` from the `apache2.conf` file. 
+TODO: Finish this
+
 ### Set up HTTPS
 
 You will first need an SSL certificate for the domain the web server will be running under. You can obtain one of these for free from Let's Encrypt. We obtained one for `fingerprint.byu.edu` by sending a CSR to the BYU Networking team. If you are just using a self signed certificate you can skip to the step called "Enable the default ssl configuration".  
@@ -140,6 +145,31 @@ TODO: editing the config files and then accessing the site (from https using the
 ## Logging
 
 TODO: Set up for logging solution
+
+## Set up Echo Server
+
+This echo server is built in a Flask app that runs on top of Apache using wSGI.  
+
+Install the necessary packages:  
+```
+sudo apt install python3-flask libapache2-mod-wsgi-py3
+```
+
+Add the following lines to the end of `/etc/apache2/sites-available/ssl-default.conf`:  
+```
+WSGIDaemonProcess flaskapp threads=5
+WSGIScriptAlias /echo /var/www/html/echo/flaskapp.wsgi
+
+<Directory /var/www/html/echo>
+    SSLOptions +StdEnvVars
+        WSGIProcessGroup flaskapp
+        WSGIApplicationGroup %{GLOBAL}
+        Order deny,allow
+        Allow from all
+</Directory>
+```
+
+Copy `flaskapp.py` & `flaskapp.wsgi` from this repository to `/var/www/html/echo/` on the web server.
 
 ## Evilginx setup (Kali)  
 
