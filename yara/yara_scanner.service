@@ -5,7 +5,7 @@ After=network.target
 [Service]
 User=carrots
 WorkingDirectory=/var/www/wordpress/yara
-ExecStart=/usr/bin/python3 /var/www/wordpress/yara/app.py
+ExecStart=/usr/bin/gunicorn --config /var/www/wordpress/yara/gunicorn_config.py app:app
 Restart=always
 
 [Install]
