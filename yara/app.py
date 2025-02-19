@@ -37,4 +37,4 @@ def process_log():
         return jsonify({"proxy_detected": False, "details": []})
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='0.0.0.0')

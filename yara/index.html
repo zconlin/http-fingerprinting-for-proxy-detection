@@ -19,9 +19,9 @@
     <script>
         document.getElementById('logForm').addEventListener('submit', async function(event) {
             event.preventDefault();
-            
+
             const logText = document.getElementById('logText').value;
-            const response = await fetch('/process_log', {
+            const response = await fetch('/yara/process_log', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ logText })
