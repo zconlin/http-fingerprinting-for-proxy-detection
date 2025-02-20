@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Log YARA Scanner</title>
+</head>
+<body>
+    <h1>Log Scanner</h1>
+    <form id="logForm">
+        <label for="logText">Paste your log text:</label><br>
+        <textarea id="logText" name="logText" rows="10" cols="50" required></textarea><br><br>
+        <button type="submit">Scan Log</button>
+    </form>
+
+    <h2>Detection Results</h2>
+    <ul id="results"></ul>
+
+    <script>
+        document.getElementById('logForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
+
+            const logText = document.getElementById('logText').value;
+            const response = await fetch('/yara/process_log', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ logText })
+            });
+
+            const result = await response.json();
+            const resultsElement = document.getElementById('results');
+            resultsElement.innerHTML = '';
+
+            if (result.proxy_detected) {
+                result.details.forEach(entry => {
+                    const li = document.createElement('li');
+                    li.textContent = `${entry.proxy.toUpperCase()} detected!! (Rules: ${entry.rules_triggered.join(", ")})`;
+                    resultsElement.appendChild(li);
+                });
+            } else {
+                const li = document.createElement('li');
+                li.textContent = 'No proxy detected.';
+                resultsElement.appendChild(li);
+            }
+        });
+    </script>
+</body>
+</html>

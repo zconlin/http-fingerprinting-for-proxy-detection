@@ -1,0 +1,19 @@
+[Unit]
+Description=Yara Rule Scanner
+After=network.target
+
+[Service]
+User=carrots
+WorkingDirectory=/var/www/wordpress/yara
+ExecStart=/usr/bin/gunicorn --config /var/www/wordpress/yara/gunicorn_config.py app:app
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+
+# Process to set this up
+# sudo nano /etc/systemd/system/yara_scanner.service
+# sudo systemctl daemon-reload
+# sudo systemctl start yara_scanner.service
+# sudo systemctl enable yara_scanner.service
+# sudo systemctl status yara_scanner.service
