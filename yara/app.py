@@ -7,13 +7,16 @@ rules = {
     "modlishka": yara.compile(filepath="rules/modlishka.yar"),
     "traefik": yara.compile(filepath="rules/traefik.yar"),
     "muraena": yara.compile(filepath="rules/muraena.yar"),
-    "mitmproxy": yara.compile(filepath="rules/mitmproxy.yar")
+    "mitmproxy": yara.compile(filepath="rules/mitmproxy.yar"),
+    "tinyproxy": yara.compile(filepath="rules/tinyproxy.yar")
 }
 
 @app.route('/')
 def index():
     return open('index.html').read()
 
+# Dev -> /yara/process_log
+# Prod -> /process_log
 @app.route('/process_log', methods=['POST'])
 def process_log():
     data = request.get_json()
@@ -35,3 +38,7 @@ def process_log():
         return jsonify({"proxy_detected": True, "details": detected})
     else:
         return jsonify({"proxy_detected": False, "details": []})
+    
+# Uncomment for local testing and run with `python3 app.py`
+# if __name__ == '__main__':
+    # app.run(host='127.0.0.1', port=5000)
