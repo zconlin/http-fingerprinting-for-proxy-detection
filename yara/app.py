@@ -17,6 +17,7 @@ def index():
 
 # Dev -> /yara/process_log
 # Prod -> /process_log
+# I don't know why this route is different cuz I cloned the server but I can't be bothered to debug it
 @app.route('/process_log', methods=['POST'])
 def process_log():
     data = request.get_json()
