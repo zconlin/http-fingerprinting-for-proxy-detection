@@ -4,7 +4,7 @@ from flask import Flask, request, jsonify
 
 app = Flask(__name__)
 
-@app.route("/", defaults={"path": ""}) 
+@app.route("/", defaults={"path": ""}, methods=['GET', 'POST']) 
 @app.route("/<path:path>")
 def hello_world(path):
     method = request.method
