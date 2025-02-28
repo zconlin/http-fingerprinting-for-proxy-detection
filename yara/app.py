@@ -4,6 +4,7 @@ import yara
 app = Flask(__name__)
 
 rules = {
+    "evilginx": yara.compile(filepath="rules/evilginx.yar"),
     "modlishka": yara.compile(filepath="rules/modlishka.yar"),
     "traefik": yara.compile(filepath="rules/traefik.yar"),
     "muraena": yara.compile(filepath="rules/muraena.yar"),
